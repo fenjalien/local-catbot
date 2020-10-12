@@ -1,0 +1,35 @@
+name: Build and publish binaries to release page
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  publish-win:
+    name: "Publish Windows binary"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      
+      - name: Read version number
+        uses: olegtarasov/get-tag@v2
+      - name: Build
+        run: cargo build --release
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/${{ env.NAME }}.exe
+          asset_name: ${{ env.FILE }}_${{ env.GIT_TAG_NAME }}_windows.exe
+          tag: ${{ github.ref }}
