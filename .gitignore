@@ -1,0 +1,8 @@
+debug/
+target/
+.cargo/
+.vscode/
+
+Cargo.lock
+
+**/*.rs.bk

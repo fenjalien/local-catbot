@@ -1,0 +1,11 @@
+[package]
+name = "local-catbot"
+version = "0.1.0"
+authors = ["fenjalien <fenjalien.code@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+actix-web = "3"
+webbrowser = "0.5"
+reqwest = { version = "0.10", features = ["json"] }
+anyhow = "*"
