@@ -10,6 +10,36 @@ env:
   FILE: local-catbot  
 
 jobs:
+  publish-linux:
+    name: "Publish Linux binary"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - name: Read version number
+        run: echo ::set-env name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Update APT
+        run: sudo apt-get update
+      - name: Install libdev
+        run: sudo apt-get install -y libudev-dev
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/${{ env.NAME }}
+          asset_name: ${{ env.FILE }}v${{ env.VERSION }}_linux
+          tag: ${{ github.ref }}
+  
   publish-win:
     name: "Publish Windows binary"
     runs-on: windows-latest
@@ -31,5 +61,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: target/release/${{ env.NAME }}.exe
-          asset_name: ${{ env.FILE }}_${{ env.GIT_TAG_NAME }}_windows.exe
+          asset_name: ${{ env.FILE }}v${{ env.GIT_TAG_NAME }}_windows.exe
           tag: ${{ github.ref }}
