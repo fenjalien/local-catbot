@@ -2,12 +2,12 @@ name: Build and publish binaries to release page
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags: 
+      - '*'
 
 env:
   NAME: local-catbot
+  FILE: local-catbot  
 
 jobs:
   publish-win:
